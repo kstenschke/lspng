@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
 
   std::vector<std::tuple<std::string, float>> tuples_png_and_luminance;
 
-  for (auto const path_png : png_files) {
+  for (auto const& path_png : png_files) {
     auto luminance_total = GetAvgLuminance(path_png);
     auto luminance_total_str = std::to_string(luminance_total);
 
@@ -68,7 +68,9 @@ int main(int argc, char **argv) {
 
   for (auto const path_png : png_files) {
     auto prefix = std::to_string(index);
-    while (prefix.size() < amount_digits) prefix = "0" + prefix;
+
+    while (prefix.size() < amount_digits)
+      prefix = std::string("0").append(prefix);
 
     auto filename = GetFilenameFromPath(path_png);
 
@@ -84,9 +86,7 @@ int main(int argc, char **argv) {
 std::vector<std::string> GetPngsInPath(const char *path) {
   struct dirent **namelist;
   int filecount;
-
   std::vector<std::string> files;
-
   filecount = scandir(path, &namelist, nullptr, alphasort);
 
   if (filecount > 0) {
@@ -94,16 +94,12 @@ std::vector<std::string> GetPngsInPath(const char *path) {
       if (namelist[i]->d_name[0] == '.'
           || std::string(namelist[i]->d_name).find(".png") !=
               strlen(namelist[i]->d_name) - 4
-          )
-        continue;
+          ) continue;
 
       files.push_back(std::string(path) + namelist[i]->d_name);
     }
 
-    while (filecount--) {
-      free(namelist[filecount]);
-    }
-
+    while (filecount--) free(namelist[filecount]);
     free(namelist);
   }
 
@@ -122,7 +118,6 @@ float GetAvgLuminance(const std::string &path_png) {
 
   int width = png_img.width();
   int height = png_img.height();
-
   float luminance_total = 0;
 
   for (uint32_t x = 0; x < width; ++x) {
@@ -151,14 +146,9 @@ bool compareAsc(std::tuple<std::string, float> a,
 
   if (luminance_a < luminance_b) return true;
 
-  if (luminance_a == luminance_b) {
-    std::string filename_a = std::get<0>(a);
-    std::string filename_b = std::get<0>(b);
+  if (luminance_a != luminance_b) return false;
 
-    return filename_a < filename_b;
-  }
-
-  return false;
+  return std::get<0>(a) < std::get<0>(b);
 }
 
 bool compareDesc(std::tuple<std::string, float> a,
@@ -168,14 +158,9 @@ bool compareDesc(std::tuple<std::string, float> a,
 
   if (luminance_b < luminance_a) return true;
 
-  if (luminance_b == luminance_a) {
-    std::string filename_a = std::get<0>(a);
-    std::string filename_b = std::get<0>(b);
+  if (luminance_b != luminance_a) return false;
 
-    return filename_b < filename_a;
-  }
-
-  return false;
+  return std::get<0>(b) < std::get<0>(a);
 }
 
 #pragma clang diagnostic push
