@@ -12,6 +12,7 @@
 
 #define cimg_use_png 1
 
+#include <iostream>
 #include <cstdlib>
 #include <string>
 #include <png.h>
@@ -22,6 +23,12 @@
 using namespace std;
 using namespace cimg_library;
 
+void ParseArguments(uint8_t argc,
+                    char *const *argv,
+                    bool *descending,
+                    uint8_t *amount_digits_min);
+
+void PrintVersionAndExit();
 std::vector<std::string> GetPngsInPath(const char *path);
 std::string GetFilenameFromPath(const std::string &path);
 float GetAvgLuminance(const std::string &path_png);
@@ -36,10 +43,7 @@ int main(int argc, char **argv) {
   uint8_t amount_digits_min = 1;
   bool descending = false;
 
-  if (argc > 1) {
-    if (strcmp(argv[1], "-d") == 0 || strcmp(argv[1], "--desc") == 0)
-      descending = true;
-  }
+  if (argc > 1) ParseArguments(argc, argv, &descending, &amount_digits_min);
 
   std::string path_bin = argv[0];
   path_bin = path_bin.substr(0, path_bin.length() - 5);
@@ -81,6 +85,35 @@ int main(int argc, char **argv) {
   }
 
   return 0;
+}
+
+void ParseArguments(uint8_t argc,
+                    char *const *argv,
+                    bool *descending,
+                    uint8_t *amount_digits_min) {
+
+  for (uint8_t index_arg = 0; index_arg < argc; ++index_arg) {
+    if (strcmp(argv[index_arg], "-V") == 0
+        || strcmp(argv[index_arg], "--version") == 0) PrintVersionAndExit();
+
+    if (strcmp(argv[index_arg], "-d") == 0
+        || strcmp(argv[index_arg], "--desc") == 0)
+      *descending = true;
+  }
+}
+
+void PrintVersionAndExit() {
+  std::cout
+      << "lspng 0.0.1\n"
+         "License GPLv3+: GNU GPL version 3 or later "
+         "<http://gnu.org/licenses/gpl.html>.\n"
+         "This is free software: you are free to change and redistribute it.\n"
+         "There is NO WARRANTY, to the extent permitted by law.\n"
+         "\n"
+         "Written by Kay Stenschke, see <https://github.com/kstenschke/lspng>."
+         "\n";
+
+  exit(0);
 }
 
 std::vector<std::string> GetPngsInPath(const char *path) {

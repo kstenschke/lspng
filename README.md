@@ -3,6 +3,7 @@
 ## Table of Contents
 
 * [What does it do?](#what-does-it-do)
+* [Command: ``--version`` or ``-v``](#command---version-or--v)
 * [Option: ``--desc`` or ``-d``](#option---desc-or--d)
 * [Option: amount_digits](#option-amount_digits)
 * [Build from source](#build-from-source)
@@ -18,6 +19,12 @@
 Running ``lspng`` prefixes each PNG image in that path with its relative 
 luminance-rank. 
 Sorting those files alphabetically than also sorts them by luminance.
+
+
+## Command: ``--version`` or ``-v``
+
+Print information about installed version of ``lspng```, its license and
+author(s). 
 
 
 ## Option: ``--desc`` or ``-d``
