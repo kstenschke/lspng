@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.10)
 project(lspng)
 
 include_directories(${CMAKE_SOURCE_DIR})
@@ -18,10 +18,14 @@ else()
             + "Transparency may not be correctly detected.")
 endif()
 
-add_executable(lspng CImg/CImg.h lspng/main.cpp)
+add_executable(lspng CImg/CImg.h lspng/main.cc)
 
 target_link_libraries(lspng
         X11
         pthread
         m
         png)
+
+install(TARGETS
+        ${PROJECT_NAME}
+        RUNTIME DESTINATION /usr/bin/)
