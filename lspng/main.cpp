@@ -69,8 +69,9 @@ int main(int argc, char **argv) {
 
   uint32_t index = 0;
   auto amount_digits = std::to_string(png_files.size()).length();
+  if (amount_digits < amount_digits_min) amount_digits = amount_digits_min;
 
-  for (auto const path_png : png_files) {
+  for (auto const& path_png : png_files) {
     auto prefix = std::to_string(index);
 
     while (prefix.size() < amount_digits)
@@ -97,8 +98,21 @@ void ParseArguments(uint8_t argc,
         || strcmp(argv[index_arg], "--version") == 0) PrintVersionAndExit();
 
     if (strcmp(argv[index_arg], "-d") == 0
-        || strcmp(argv[index_arg], "--desc") == 0)
+        || strcmp(argv[index_arg], "--desc") == 0) {
       *descending = true;
+      continue;
+    }
+
+    auto v = std::string(argv[index_arg]);
+    if (v.find("-a=") == 0) {
+      *amount_digits_min = std::stoi(v.substr(3));
+      continue;
+    }
+
+    if (v.find("--amount_digits_min=") == 0) {
+      *amount_digits_min = std::stoi(v.substr(20));
+      continue;
+    }
   }
 }
 

@@ -5,7 +5,7 @@
 * [What does it do?](#what-does-it-do)
 * [Command: ``--version`` or ``-v``](#command---version-or--v)
 * [Option: ``--desc`` or ``-d``](#option---desc-or--d)
-* [Option: amount_digits](#option-amount_digits)
+* [Option: ``--amount_digits_min=`` or ``-a=``](#option---amount_digits_min-or--a)
 * [Build from source](#build-from-source)
 * [Install](#install)
 * [Conventions](#conventions)
@@ -34,10 +34,10 @@ Running ``lspng -d`` will sort/rename the files descending instead, that is from
 darkest to lightest.
 
 
-## Option: amount_digits
+## Option: ``--amount_digits_min=`` or ``-a=``
 
-Running ``lspng a=3`` will enforce a minmum prefix length of three digits.
-Instead of e.g. `0_foo.png` the lightest PNG image than will be renamed to 
+Running ``lspng -a=3`` will set a minimum prefix length of three digits.
+Instead of e.g. `0_foo.png` the lightest PNG image than will be named 
 `000_foo.png`.
  
 
