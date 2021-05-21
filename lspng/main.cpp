@@ -71,7 +71,8 @@ int main(int argc, char **argv) {
   auto amount_digits = std::to_string(png_files.size()).length();
   if (amount_digits < amount_digits_min) amount_digits = amount_digits_min;
 
-  for (auto const& path_png : png_files) {
+  for (auto const& tuple_png_and_luminance : tuples_png_and_luminance) {
+    const auto& path_png = std::get<0>(tuple_png_and_luminance);
     auto prefix = std::to_string(index);
 
     while (prefix.size() < amount_digits)
