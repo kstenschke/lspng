@@ -23,7 +23,7 @@ Sorting those files alphabetically than also sorts them by luminance.
 
 ## Command: ``--version`` or ``-v``
 
-Print information about installed version of ``lspng```, its license and
+Print information about installed version of ``lspng``, its license and
 author(s). 
 
 
