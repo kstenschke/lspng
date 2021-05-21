@@ -22,5 +22,6 @@ before_install:
 script:
   - cmake CMakeLists.txt && make
   - sudo make install
+  - rm CImg -R  # dont lint CImg
   - cppcheck --enable=all ./lspng
   - cpplint grepc/* --extensions=cc,h
