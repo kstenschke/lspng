@@ -1,6 +1,6 @@
 lspng Changelog
 ===============
 
-v0.0.1 Not tagged yet
----------------------
+v0.0.1 2021-05-22
+-----------------
 * Initial release
