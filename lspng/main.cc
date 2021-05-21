@@ -93,7 +93,6 @@ void ParseArguments(uint8_t argc,
                     char *const *argv,
                     bool *descending,
                     uint8_t *amount_digits_min) {
-
   for (uint8_t index_arg = 0; index_arg < argc; ++index_arg) {
     if (strcmp(argv[index_arg], "-V") == 0
         || strcmp(argv[index_arg], "--version") == 0) PrintVersionAndExit();

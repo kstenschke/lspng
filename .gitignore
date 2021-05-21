@@ -2,3 +2,8 @@ cmake-build-debug
 .idea
 CImg
 bin/*.png
+cmake_install.cmake
+CMakeCache.txt
+install_manifest.txt
+lspng.cbp
+Makefile
