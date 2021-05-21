@@ -1,4 +1,4 @@
-[![Build Status](https://api.travis-ci.com/kstenschke/lspng.svg?branch=main)](https://travis-ci.com/kstenschke/lspng)
+[![Build Status](https://api.travis-ci.com/kstenschke/lspng.svg?branch=master)](https://travis-ci.com/kstenschke/lspng)
 [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/kstenschke/lspng.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/kstenschke/lspng/context:cpp)
 [![CodeFactor](https://www.codefactor.io/repository/github/kstenschke/lspng/badge)](https://www.codefactor.io/repository/github/kstenschke/lspng)
 
