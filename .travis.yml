@@ -16,7 +16,8 @@ addons:
 
 before_install:
   - sudo pip install cpplint
-  - git submodule update --init --recursive
+  - git clone https://github.com/dtschump/CImg.git
+#  - git submodule update --init --recursive
 
 script:
   - cmake CMakeLists.txt && make
