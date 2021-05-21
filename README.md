@@ -20,9 +20,11 @@
 
 ## What does it do?
 
-Running ``lspng`` prefixes each PNG image in that path with its relative 
-luminance-rank. 
-Sorting those files alphabetically than also sorts them by luminance.
+Running ``lspng`` determines the luminance of each PNG image file in the 
+working directory and than prefixes the png's filename with its luminance rank 
+number when compared to the other pngs in that directory. Thereby the 
+alphabetical order of those filenames thereafter matches the PNGs' order by
+from darkest to lightest.
 
 
 ## Command: ``--version`` or ``-v``
