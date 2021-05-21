@@ -36,7 +36,9 @@ Instead of e.g. `0_foo.png` the lightest PNG image than will be renamed to
 
 ## Build from source
 
-``cmake CMakeLists.txt; make``
+Initially fetch dependencies:``git submodule update --init --recursive``
+  
+Than: ``cmake CMakeLists.txt; make``
 
 
 ## Install

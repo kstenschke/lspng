@@ -1,12 +1,11 @@
 #define cimg_use_png 1
 
-#include <iostream>
 #include <cstdlib>
 #include <string>
 #include <png.h>
 #include <vector>
 #include <tuple>
-#include <lspng/../vendor/CImg/CImg.h>
+#include <lspng/../CImg/CImg.h>
 
 using namespace std;
 using namespace cimg_library;

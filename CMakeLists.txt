@@ -18,7 +18,7 @@ else()
             + "Transparency may not be correctly detected.")
 endif()
 
-add_executable(lspng vendor/CImg/CImg.h lspng/main.cpp)
+add_executable(lspng CImg/CImg.h lspng/main.cpp)
 
 target_link_libraries(lspng
         X11
