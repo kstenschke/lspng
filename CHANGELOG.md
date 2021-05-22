@@ -1,7 +1,7 @@
 lspng Changelog
 ===============
 
-v0.0.2 - Not tagged yet
+v0.0.2 - 2021-05-22
 -----------------------
 * Add option ``-n`` / ``--numeric_only``
 * Fix relative path handling
