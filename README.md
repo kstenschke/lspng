@@ -10,6 +10,7 @@
 * [Command: ``--version`` or ``-v``](#command---version-or--v)
 * [Option: ``--desc`` or ``-d``](#option---desc-or--d)
 * [Option: ``--amount_digits_min=`` or ``-a=``](#option---amount_digits_min-or--a)
+* [Option: ``--numeric_only`` or ``-n``](#option---amount_digits_min-or--a)
 * [Build from source](#build-from-source)
 * [Install](#install)
 * [Conventions](#conventions)
@@ -45,7 +46,14 @@ darkest to lightest.
 Running ``lspng -a=3`` will set a minimum prefix length of three digits.
 Instead of e.g. `0_foo.png` the lightest PNG image than will be named 
 `000_foo.png`.
- 
+
+
+## Option: ``--numeric_only`` or ``-n``
+
+Running ``lspng -n`` will ommit the original filenames and rename png files
+numeric only. Instead of e.g. `0_foo.png` the lightest PNG image than will be named 
+`0.png`.
+
 
 ## Build from source
 

@@ -26,9 +26,11 @@ using namespace cimg_library;
 void ParseArguments(uint8_t argc,
                     char *const *argv,
                     bool *descending,
-                    uint8_t *amount_digits_min);
+                    uint8_t *amount_digits_min,
+                    bool *numeric_only_filenames);
 
 void PrintVersionAndExit();
+std::string EvalInCli(const char *command);
 std::vector<std::string> GetPngsInPath(const char *path);
 std::string GetFilenameFromPath(const std::string &path);
 float GetAvgLuminance(const std::string &path_png);
@@ -42,12 +44,16 @@ bool compareDesc(std::tuple<std::string, float> a,
 int main(int argc, char **argv) {
   uint8_t amount_digits_min = 1;
   bool descending = false;
+  bool numeric_only_filenames = false;
 
-  if (argc > 1) ParseArguments(argc, argv, &descending, &amount_digits_min);
-
-  std::string path_bin = argv[0];
-  path_bin = path_bin.substr(0, path_bin.length() - 5);
-  auto png_files = GetPngsInPath(path_bin.c_str());
+  if (argc > 1) ParseArguments(argc,
+                               argv,
+                               &descending,
+                               &amount_digits_min,
+                               &numeric_only_filenames);
+  auto cwd = EvalInCli("echo $PWD");
+  cwd = cwd.substr(0, cwd.length() - 1) + "/";  // remove trailing "\n"
+  auto png_files = GetPngsInPath(cwd.c_str());
 
   std::vector<std::tuple<std::string, float>> tuples_png_and_luminance;
 
@@ -80,9 +86,15 @@ int main(int argc, char **argv) {
 
     auto filename = GetFilenameFromPath(path_png);
 
-    rename(path_png.c_str(),
-           std::string(path_bin).append("/").append(prefix)
-           .append("_").append(filename).c_str());
+    std::string path_png_new = std::string(cwd).append("/")
+        .append(prefix);
+
+    if (!numeric_only_filenames)
+      path_png_new = path_png_new.append("_").append(filename);
+    else
+      path_png_new = path_png_new.append(".png");
+
+    rename(path_png.c_str(), path_png_new.c_str());
     ++index;
   }
 
@@ -92,13 +104,27 @@ int main(int argc, char **argv) {
 void ParseArguments(uint8_t argc,
                     char *const *argv,
                     bool *descending,
-                    uint8_t *amount_digits_min) {
+                    uint8_t *amount_digits_min,
+                    bool *numeric_only_filenames) {
   for (uint8_t index_arg = 0; index_arg < argc; ++index_arg) {
     if (strcmp(argv[index_arg], "-V") == 0
         || strcmp(argv[index_arg], "--version") == 0) PrintVersionAndExit();
 
     if (strcmp(argv[index_arg], "-d") == 0
         || strcmp(argv[index_arg], "--desc") == 0) {
+      *descending = true;
+      continue;
+    }
+
+    if (strcmp(argv[index_arg], "-n") == 0
+        || strcmp(argv[index_arg], "--numeric_only") == 0) {
+      *numeric_only_filenames = true;
+      continue;
+    }
+
+    if (strcmp(argv[index_arg], "-nd") == 0
+        || strcmp(argv[index_arg], "-dn") == 0) {
+      *numeric_only_filenames = true;
       *descending = true;
       continue;
     }
@@ -128,6 +154,23 @@ void PrintVersionAndExit() {
          "\n";
 
   exit(0);
+}
+
+std::string EvalInCli(const char *command) {
+  FILE *fp;
+  char path[1035];
+
+  fp = popen(command, "r");
+
+  if (fp ==nullptr) return "Failed to run command";
+
+  std::string result;
+
+  while (fgets(path, sizeof(path), fp) !=nullptr) result += path;
+
+  pclose(fp);
+
+  return result;
 }
 
 std::vector<std::string> GetPngsInPath(const char *path) {
