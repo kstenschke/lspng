@@ -11,6 +11,7 @@
 * [Option: ``--desc`` or ``-d``](#option---desc-or--d)
 * [Option: ``--amount_digits_min=`` or ``-a=``](#option---amount_digits_min-or--a)
 * [Option: ``--numeric_only`` or ``-n``](#option---amount_digits_min-or--a)
+* [Option: ``--append_luminance`` or ``-l``](#option---append_luminance_or--l)
 * [Build from source](#build-from-source)
 * [Install](#install)
 * [Conventions](#conventions)
