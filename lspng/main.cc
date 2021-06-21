@@ -19,6 +19,7 @@
 #include <vector>
 #include <tuple>
 #include <lspng/../CImg/CImg.h>
+#include <dirent.h>
 
 using namespace std;
 using namespace cimg_library;
@@ -179,19 +180,20 @@ std::vector<std::string> GetPngsInPath(const char *path) {
   std::vector<std::string> files;
   filecount = scandir(path, &namelist, nullptr, alphasort);
 
-  if (filecount > 0) {
-    for (int i = 0; i < filecount; i++) {
-      if (namelist[i]->d_name[0] == '.'
-          || std::string(namelist[i]->d_name).find(".png") !=
-              strlen(namelist[i]->d_name) - 4
-          ) continue;
+  if (filecount == 0) return files;
 
-      files.push_back(std::string(path) + namelist[i]->d_name);
-    }
+  for (int i = 0; i < filecount; i++) {
+    if (namelist[i]->d_type == DT_DIR
+        || namelist[i]->d_name[0] == '.'
+        || std::string(namelist[i]->d_name).find(".png") !=
+            strlen(namelist[i]->d_name) - 4
+        ) continue;
 
-    while (filecount--) free(namelist[filecount]);
-    free(namelist);
+    files.push_back(std::string(path) + namelist[i]->d_name);
   }
+
+  while (filecount--) free(namelist[filecount]);
+  free(namelist);
 
   return files;
 }

@@ -1,8 +1,12 @@
 lspng Changelog
 ===============
 
-v0.0.2 - 2021-05-22
+v0.0.3 - not tagged yet
 -----------------------
+* Ignore directories within path (presence did cause failure) 
+
+v0.0.2 - 2021-05-22
+-------------------
 * Add option ``-n`` / ``--numeric_only``
 * Fix relative path handling
 
