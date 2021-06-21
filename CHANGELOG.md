@@ -3,6 +3,7 @@ lspng Changelog
 
 v0.0.3 - not tagged yet
 -----------------------
+* Add option ``-l`` or ``--append_luminance``
 * Ignore directories within path (presence did cause failure) 
 
 v0.0.2 - 2021-05-22

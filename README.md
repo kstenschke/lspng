@@ -50,9 +50,17 @@ Instead of e.g. `0_foo.png` the lightest PNG image than will be named
 
 ## Option: ``--numeric_only`` or ``-n``
 
-Running ``lspng -n`` will ommit the original filenames and rename png files
+Running ``lspng -n`` will omit the original filenames and rename png files
 numeric only. Instead of e.g. `0_foo.png` the lightest PNG image than will be named 
 `0.png`.
+
+
+## Option: ``--append_luminance`` or ``-l``
+
+Running ``lspng -nl`` - the ``n`` will instruct lspng to omit the original 
+filename and name png files numerical. The ``l`` instructs lspng to append
+the image's lightness value, resulting in a filename like: `0_215.896515.png`.  
+The luminance value is a floating point number from ``0.0`` to ``255.0``.
 
 
 ## Build from source

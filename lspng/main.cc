@@ -28,7 +28,8 @@ void ParseArguments(uint8_t argc,
                     char *const *argv,
                     bool *descending,
                     uint8_t *amount_digits_min,
-                    bool *numeric_only_filenames);
+                    bool *numeric_only_filenames,
+                    bool *append_lightness_to_filename);
 
 void PrintVersionAndExit();
 std::string EvalInCli(const char *command);
@@ -42,33 +43,29 @@ bool compareAsc(std::tuple<std::string, float> a,
 bool compareDesc(std::tuple<std::string, float> a,
                  std::tuple<std::string, float> b);
 
+void CollectPngsWithLuminanceInVector(const vector<std::string> &png_files,
+                                      vector<std::tuple<std::string,
+                                                        float>> &tuples_png_and_luminance);
 int main(int argc, char **argv) {
   uint8_t amount_digits_min = 1;
   bool descending = false;
   bool numeric_only_filenames = false;
+  bool append_luminance_to_filename = false;
 
   if (argc > 1) ParseArguments(argc,
                                argv,
                                &descending,
                                &amount_digits_min,
-                               &numeric_only_filenames);
+                               &numeric_only_filenames,
+                               &append_luminance_to_filename);
+
   auto cwd = EvalInCli("echo $PWD");
   cwd = cwd.substr(0, cwd.length() - 1) + "/";  // remove trailing "\n"
   auto png_files = GetPngsInPath(cwd.c_str());
 
   std::vector<std::tuple<std::string, float>> tuples_png_and_luminance;
 
-  for (auto const& path_png : png_files) {
-    auto luminance_total = GetAvgLuminance(path_png);
-    auto luminance_total_str = std::to_string(luminance_total);
-
-    if (luminance_total_str.find("-nan") == 0)
-      continue;  // determining brightness failed: dont rename
-
-    auto filename = GetFilenameFromPath(path_png);
-    tuples_png_and_luminance.emplace_back(
-        std::make_tuple(filename, luminance_total));
-  }
+  CollectPngsWithLuminanceInVector(png_files, tuples_png_and_luminance);
 
   std::sort(tuples_png_and_luminance.begin(),
             tuples_png_and_luminance.end(),
@@ -80,6 +77,8 @@ int main(int argc, char **argv) {
 
   for (auto const& tuple_png_and_luminance : tuples_png_and_luminance) {
     const auto& path_png = std::get<0>(tuple_png_and_luminance);
+    const auto& luminance = std::get<1>(tuple_png_and_luminance);
+
     auto prefix = std::to_string(index);
 
     while (prefix.size() < amount_digits)
@@ -95,6 +94,12 @@ int main(int argc, char **argv) {
     else
       path_png_new = path_png_new.append(".png");
 
+    if (append_luminance_to_filename) {
+      path_png_new = path_png_new.substr(0, path_png_new.length() - 4)
+          + "_" + std::to_string(luminance)
+          + ".png";
+    }
+
     rename(path_png.c_str(), path_png_new.c_str());
     ++index;
   }
@@ -102,11 +107,28 @@ int main(int argc, char **argv) {
   return 0;
 }
 
+void CollectPngsWithLuminanceInVector(
+    const vector<std::string> &png_files,
+    vector<std::tuple<std::string, float>> &tuples_png_and_luminance) {
+  for (auto const& path_png : png_files) {
+    auto luminance_total = GetAvgLuminance(path_png);
+    auto luminance_total_str = to_string(luminance_total);
+
+    if (luminance_total_str.find("-nan") == 0)
+      continue;  // determining brightness failed: dont rename
+
+    auto filename = GetFilenameFromPath(path_png);
+    tuples_png_and_luminance.emplace_back(
+        make_tuple(filename, luminance_total));
+  }
+}
+
 void ParseArguments(uint8_t argc,
                     char *const *argv,
                     bool *descending,
                     uint8_t *amount_digits_min,
-                    bool *numeric_only_filenames) {
+                    bool *numeric_only_filenames,
+                    bool *append_lightness_to_filename) {
   for (uint8_t index_arg = 0; index_arg < argc; ++index_arg) {
     if (strcmp(argv[index_arg], "-V") == 0
         || strcmp(argv[index_arg], "--version") == 0) PrintVersionAndExit();
@@ -123,10 +145,39 @@ void ParseArguments(uint8_t argc,
       continue;
     }
 
+    if (strcmp(argv[index_arg], "-l") == 0
+        || strcmp(argv[index_arg], "--append_luminance") == 0) {
+      *append_lightness_to_filename = true;
+      continue;
+    }
+
     if (strcmp(argv[index_arg], "-nd") == 0
         || strcmp(argv[index_arg], "-dn") == 0) {
       *numeric_only_filenames = true;
       *descending = true;
+      continue;
+    }
+
+    if (strcmp(argv[index_arg], "-nl") == 0
+        || strcmp(argv[index_arg], "-ln") == 0) {
+      *numeric_only_filenames = true;
+      *append_lightness_to_filename = true;
+      continue;
+    }
+
+    if (strcmp(argv[index_arg], "-dl") == 0
+        || strcmp(argv[index_arg], "-ld") == 0) {
+      *descending = true;
+      *append_lightness_to_filename = true;
+      continue;
+    }
+
+    if (strcmp(argv[index_arg], "-ndl") == 0
+        || strcmp(argv[index_arg], "-dnl") == 0
+        || strcmp(argv[index_arg], "-nld") == 0) {
+      *numeric_only_filenames = true;
+      *descending = true;
+      *append_lightness_to_filename = true;
       continue;
     }
 
