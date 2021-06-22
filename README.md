@@ -22,10 +22,10 @@
 
 ## What does it do?
 
-Running ``lspng`` determines the luminance of each PNG image file in the 
-working directory and than prefixes the png's filename with its luminance rank 
-number when compared to the other pngs in that directory. Thereby the 
-alphabetical order of those filenames thereafter matches the PNGs' order from
+Running ``lspng`` determines the average luminance of all pixels per PNG 
+image file in the working directory and than prefixes the png's filename with 
+its luminance "rank" when compared to the other pngs in that directory.  
+Thereby the alphabetical order of those filenames than matches the PNGs' order from
 darkest to lightest.
 
 
