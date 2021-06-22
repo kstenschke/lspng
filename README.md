@@ -11,7 +11,7 @@
 * [Option: ``--desc`` or ``-d``](#option---desc-or--d)
 * [Option: ``--amount_digits_min=`` or ``-a=``](#option---amount_digits_min-or--a)
 * [Option: ``--numeric_only`` or ``-n``](#option---amount_digits_min-or--a)
-* [Option: ``--append_luminance`` or ``-l``](#option---append_luminance_or--l)
+* [Option: ``--append_luminance`` or ``-l``](#option---append_luminance-or--l)
 * [Build from source](#build-from-source)
 * [Install](#install)
 * [Conventions](#conventions)
@@ -60,8 +60,8 @@ numeric only. Instead of e.g. `0_foo.png` the lightest PNG image than will be na
 
 Running ``lspng -nl`` - the ``n`` will instruct lspng to omit the original 
 filename and name png files numerical. The ``l`` instructs lspng to append
-the image's lightness value, resulting in a filename like: `0_215.896515.png`.  
-The luminance value is a floating point number from ``0.0`` to ``255.0``.
+the image's lightness value, resulting in a filename like: `0_050.png`.  
+The luminance value in percent ranges from ``000`` (=white) to ``100`` (=black).
 
 
 ## Build from source

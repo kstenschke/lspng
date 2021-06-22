@@ -43,9 +43,13 @@ bool compareAsc(std::tuple<std::string, float> a,
 bool compareDesc(std::tuple<std::string, float> a,
                  std::tuple<std::string, float> b);
 
-void CollectPngsWithLuminanceInVector(const vector<std::string> &png_files,
-                                      vector<std::tuple<std::string,
-                                                        float>> &tuples_png_and_luminance);
+void CollectPngsWithLuminanceInVector(
+    const vector<std::string> &png_files,
+    vector<std::tuple<std::string, float>> &tuples_png_and_luminance);
+
+string GetPercentFromLuminanceFloat(const float &luminance,
+                                    int amount_digits = 3);
+
 int main(int argc, char **argv) {
   uint8_t amount_digits_min = 1;
   bool descending = false;
@@ -96,7 +100,7 @@ int main(int argc, char **argv) {
 
     if (append_luminance_to_filename) {
       path_png_new = path_png_new.substr(0, path_png_new.length() - 4)
-          + "_" + std::to_string(luminance)
+          + "_" + GetPercentFromLuminanceFloat(luminance)
           + ".png";
     }
 
@@ -105,6 +109,19 @@ int main(int argc, char **argv) {
   }
 
   return 0;
+}
+
+// Get percentage value (0-100) from given luminance float: 0.0-255.0
+string GetPercentFromLuminanceFloat(const float &luminance, int amount_digits) {
+  // |V1 - V2|/ [(V1 + V2)/2] × 100
+  float float_percent = (255.0 - luminance) / ((255.0 + luminance) / 2) * 100;
+  auto percent = 100 - ((int)float_percent / 2);
+
+  auto rc = to_string(percent);
+
+  while (rc.size() < 3) rc = "0" + rc;
+
+  return rc;
 }
 
 void CollectPngsWithLuminanceInVector(
@@ -196,7 +213,7 @@ void ParseArguments(uint8_t argc,
 
 void PrintVersionAndExit() {
   std::cout
-      << "lspng 0.0.2\n"
+      << "lspng 0.0.3\n"
          "License GPLv3+: GNU GPL version 3 or later "
          "<http://gnu.org/licenses/gpl.html>.\n"
          "This is free software: you are free to change and redistribute it.\n"
