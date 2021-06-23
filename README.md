@@ -22,9 +22,8 @@
 
 ## What does it do?
 
-lspng determines the average luminance per PNG image in the working directory 
-and than adds an ordinal "rank" part into the filenames.  
-Thereby PNG image files become sortable by luminance via their filenames.
+lspng analyzes and renames PNG image files, so their filenames allow to sort PNGs 
+by luminance.
 
 
 ## Command: ``--version`` or ``-v``
