@@ -113,7 +113,7 @@ int main(int argc, char **argv) {
       int wid = GetPngWidth(path_png);
       int hgt = GetPngHeight(path_png);
 
-      path_png_new + "_" + to_string(wid) + "x" + to_string(hgt);
+      path_png_new += "_" + to_string(wid) + "x" + to_string(hgt);
     }
 
     path_png_new += ".png";
