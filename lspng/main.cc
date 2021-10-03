@@ -31,7 +31,7 @@ void ParseArguments(
     bool *descending,
     uint8_t *amount_digits_min,
     bool *numeric_only_filenames,
-    bool *append_lightness_to_filename, bool *append_wid_hgt_to_filename);
+    bool *append_luminance_to_filename, bool *append_wid_hgt_to_filename);
 
 void PrintVersionAndExit();
 std::string EvalInCli(const char *command);
@@ -154,13 +154,12 @@ void CollectPngsWithLuminanceInVector(
   }
 }
 
-void ParseArguments(uint8_t argc,
-                    char *const *argv,
-                    bool *descending,
-                    uint8_t *amount_digits_min,
-                    bool *numeric_only_filenames,
-                    bool *append_luminance_to_filename,
-                    bool *append_wid_and_hgt_to_filename) {
+void ParseArguments(
+    uint8_t argc, char *const *argv,
+    bool *descending,
+    uint8_t *amount_digits_min,
+    bool *numeric_only_filenames,
+    bool *append_luminance_to_filename, bool *append_wid_hgt_to_filename) {
   for (uint8_t index_arg = 0; index_arg < argc; ++index_arg) {
     if (strcmp(argv[index_arg], "-V") == 0
         || strcmp(argv[index_arg], "--version") == 0) PrintVersionAndExit();
@@ -185,7 +184,7 @@ void ParseArguments(uint8_t argc,
 
     if (strcmp(argv[index_arg], "-p") == 0
         || strcmp(argv[index_arg], "--append_px_wid_and_hgt") == 0) {
-      *append_wid_and_hgt_to_filename = true;
+      *append_wid_hgt_to_filename = true;
       continue;
     }
 
@@ -206,7 +205,7 @@ void ParseArguments(uint8_t argc,
     if (strcmp(argv[index_arg], "-np") == 0
         || strcmp(argv[index_arg], "-pn") == 0) {
       *numeric_only_filenames = true;
-      *append_wid_and_hgt_to_filename = true;
+      *append_wid_hgt_to_filename = true;
       continue;
     }
 
@@ -220,7 +219,7 @@ void ParseArguments(uint8_t argc,
     if (strcmp(argv[index_arg], "-dp") == 0
         || strcmp(argv[index_arg], "-pd") == 0) {
       *descending = true;
-      *append_wid_and_hgt_to_filename = true;
+      *append_wid_hgt_to_filename = true;
       continue;
     }
 
@@ -238,7 +237,7 @@ void ParseArguments(uint8_t argc,
         || strcmp(argv[index_arg], "-npd") == 0) {
       *numeric_only_filenames = true;
       *descending = true;
-      *append_wid_and_hgt_to_filename = true;
+      *append_wid_hgt_to_filename = true;
       continue;
     }
 
@@ -251,7 +250,7 @@ void ParseArguments(uint8_t argc,
       *numeric_only_filenames = true;
       *descending = true;
       *append_luminance_to_filename = true;
-      *append_wid_and_hgt_to_filename = true;
+      *append_wid_hgt_to_filename = true;
       continue;
     }
 
@@ -270,7 +269,7 @@ void ParseArguments(uint8_t argc,
 
 void PrintVersionAndExit() {
   std::cout
-      << "lspng 0.0.3\n"
+      << "lspng 0.0.4\n"
          "License GPLv3+: GNU GPL version 3 or later "
          "<http://gnu.org/licenses/gpl.html>.\n"
          "This is free software: you are free to change and redistribute it.\n"
