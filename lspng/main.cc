@@ -20,16 +20,18 @@
 #include <tuple>
 #include <lspng/../CImg/CImg.h>
 #include <dirent.h>
+#include <fstream>
+#include <netinet/in.h>
 
 using namespace std;
 using namespace cimg_library;
 
-void ParseArguments(uint8_t argc,
-                    char *const *argv,
-                    bool *descending,
-                    uint8_t *amount_digits_min,
-                    bool *numeric_only_filenames,
-                    bool *append_lightness_to_filename);
+void ParseArguments(
+    uint8_t argc, char *const *argv,
+    bool *descending,
+    uint8_t *amount_digits_min,
+    bool *numeric_only_filenames,
+    bool *append_lightness_to_filename, bool *append_wid_hgt_to_filename);
 
 void PrintVersionAndExit();
 std::string EvalInCli(const char *command);
@@ -50,18 +52,22 @@ void CollectPngsWithLuminanceInVector(
 string GetPercentFromLuminanceFloat(const float &luminance,
                                     int amount_digits = 3);
 
+int GetPngHeight(const std::string& path_png);
+int GetPngWidth(const std::string& path_png);
+
 int main(int argc, char **argv) {
   uint8_t amount_digits_min = 1;
   bool descending = false;
   bool numeric_only_filenames = false;
   bool append_luminance_to_filename = false;
+  bool append_wid_and_hgt_to_filename = false;
 
-  if (argc > 1) ParseArguments(argc,
-                               argv,
-                               &descending,
-                               &amount_digits_min,
-                               &numeric_only_filenames,
-                               &append_luminance_to_filename);
+  if (argc > 1) ParseArguments(
+      argc, argv,
+      &descending,
+      &amount_digits_min,
+      &numeric_only_filenames,
+      &append_luminance_to_filename, &append_wid_and_hgt_to_filename);
 
   auto cwd = EvalInCli("echo $PWD");
   cwd = cwd.substr(0, cwd.length() - 1) + "/";  // remove trailing "\n"
@@ -90,19 +96,27 @@ int main(int argc, char **argv) {
 
     auto filename = GetFilenameFromPath(path_png);
 
-    std::string path_png_new = std::string(cwd).append("/")
-        .append(prefix);
+    std::string path_png_new = std::string(cwd).append("/").append(prefix);
 
-    if (!numeric_only_filenames)
-      path_png_new = path_png_new.append("_").append(filename);
-    else
-      path_png_new = path_png_new.append(".png");
+    path_png_new = numeric_only_filenames
+        ? path_png_new.append(".png")
+        : path_png_new.append("_").append(filename);
 
     if (append_luminance_to_filename) {
       path_png_new = path_png_new.substr(0, path_png_new.length() - 4)
-          + "_" + GetPercentFromLuminanceFloat(luminance)
-          + ".png";
+          + "_" + GetPercentFromLuminanceFloat(luminance);
+    } else {
+      path_png_new = path_png_new.substr(0, path_png_new.length() - 4);
     }
+
+    if (append_wid_and_hgt_to_filename) {
+      int wid = GetPngWidth(path_png);
+      int hgt = GetPngHeight(path_png);
+
+      path_png_new + "_" + to_string(wid) + "x" + to_string(hgt);
+    }
+
+    path_png_new += ".png";
 
     rename(path_png.c_str(), path_png_new.c_str());
     ++index;
@@ -145,7 +159,8 @@ void ParseArguments(uint8_t argc,
                     bool *descending,
                     uint8_t *amount_digits_min,
                     bool *numeric_only_filenames,
-                    bool *append_lightness_to_filename) {
+                    bool *append_luminance_to_filename,
+                    bool *append_wid_and_hgt_to_filename) {
   for (uint8_t index_arg = 0; index_arg < argc; ++index_arg) {
     if (strcmp(argv[index_arg], "-V") == 0
         || strcmp(argv[index_arg], "--version") == 0) PrintVersionAndExit();
@@ -164,7 +179,13 @@ void ParseArguments(uint8_t argc,
 
     if (strcmp(argv[index_arg], "-l") == 0
         || strcmp(argv[index_arg], "--append_luminance") == 0) {
-      *append_lightness_to_filename = true;
+      *append_luminance_to_filename = true;
+      continue;
+    }
+
+    if (strcmp(argv[index_arg], "-p") == 0
+        || strcmp(argv[index_arg], "--append_px_wid_and_hgt") == 0) {
+      *append_wid_and_hgt_to_filename = true;
       continue;
     }
 
@@ -178,14 +199,28 @@ void ParseArguments(uint8_t argc,
     if (strcmp(argv[index_arg], "-nl") == 0
         || strcmp(argv[index_arg], "-ln") == 0) {
       *numeric_only_filenames = true;
-      *append_lightness_to_filename = true;
+      *append_luminance_to_filename = true;
+      continue;
+    }
+
+    if (strcmp(argv[index_arg], "-np") == 0
+        || strcmp(argv[index_arg], "-pn") == 0) {
+      *numeric_only_filenames = true;
+      *append_wid_and_hgt_to_filename = true;
       continue;
     }
 
     if (strcmp(argv[index_arg], "-dl") == 0
         || strcmp(argv[index_arg], "-ld") == 0) {
       *descending = true;
-      *append_lightness_to_filename = true;
+      *append_luminance_to_filename = true;
+      continue;
+    }
+
+    if (strcmp(argv[index_arg], "-dp") == 0
+        || strcmp(argv[index_arg], "-pd") == 0) {
+      *descending = true;
+      *append_wid_and_hgt_to_filename = true;
       continue;
     }
 
@@ -194,7 +229,29 @@ void ParseArguments(uint8_t argc,
         || strcmp(argv[index_arg], "-nld") == 0) {
       *numeric_only_filenames = true;
       *descending = true;
-      *append_lightness_to_filename = true;
+      *append_luminance_to_filename = true;
+      continue;
+    }
+
+    if (strcmp(argv[index_arg], "-ndp") == 0
+        || strcmp(argv[index_arg], "-dnp") == 0
+        || strcmp(argv[index_arg], "-npd") == 0) {
+      *numeric_only_filenames = true;
+      *descending = true;
+      *append_wid_and_hgt_to_filename = true;
+      continue;
+    }
+
+    if (strcmp(argv[index_arg], "-ndlp") == 0
+        || strcmp(argv[index_arg], "-pndl") == 0
+        || strcmp(argv[index_arg], "-dnlp") == 0
+        || strcmp(argv[index_arg], "-pdnl") == 0
+        || strcmp(argv[index_arg], "-pnld") == 0
+        || strcmp(argv[index_arg], "-nldp") == 0) {
+      *numeric_only_filenames = true;
+      *descending = true;
+      *append_luminance_to_filename = true;
+      *append_wid_and_hgt_to_filename = true;
       continue;
     }
 
@@ -321,6 +378,28 @@ bool compareDesc(std::tuple<std::string, float> a,
   if (luminance_b != luminance_a) return false;
 
   return std::get<0>(b) < std::get<0>(a);
+}
+
+int GetPngWidth(const std::string& path_png) {
+  std::ifstream in(path_png.c_str());
+  unsigned int width, height;
+
+  in.seekg(16);
+  in.read((char *)&width, 4);
+  in.read((char *)&height, 4);
+
+  return ntohl(width);
+}
+
+int GetPngHeight(const std::string& path_png) {
+  std::ifstream in(path_png.c_str());
+  unsigned int width, height;
+
+  in.seekg(16);
+  in.read((char *)&width, 4);
+  in.read((char *)&height, 4);
+
+  return ntohl(height);
 }
 
 #pragma clang diagnostic push

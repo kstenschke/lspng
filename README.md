@@ -2,7 +2,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/kstenschke/lspng/badge)](https://www.codefactor.io/repository/github/kstenschke/lspng)
 
 
-# lspng - Sort PNGs by Luminance
+# lspng - List PNG attributes (luminance, pixel size) into their filenames
 
 ## Table of Contents
 
@@ -12,6 +12,7 @@
 * [Option: ``--amount_digits_min=`` or ``-a=``](#option---amount_digits_min-or--a)
 * [Option: ``--numeric_only`` or ``-n``](#option---amount_digits_min-or--a)
 * [Option: ``--append_luminance`` or ``-l``](#option---append_luminance-or--l)
+* [Option: ``--append_px_wid_and_hgt`` or ``-p``](#option---append_px_wid_and_hgt-or--p)
 * [Build from source](#build-from-source)
 * [Install](#install)
 * [Conventions](#conventions)
@@ -22,8 +23,9 @@
 
 ## What does it do?
 
-lspng analyzes and renames PNG image files, so their filenames allow to sort PNGs 
-by luminance.
+lspng analyzes and renames PNG image files, so their filenames allow to sort 
+PNGs by luminance. Additionally the pixel size (width x height) of images can be
+added into their filename.
 
 
 ## Command: ``--version`` or ``-v``
@@ -58,6 +60,15 @@ numeric only. Instead of e.g. `0_foo.png` the lightest PNG image than will be na
 Running ``lspng -nl`` - the ``n`` will instruct lspng to omit the original 
 filename and name png files numerical. The ``l`` instructs lspng to append
 the image's lightness value, resulting in a filename like: `0_050.png`.  
+The luminance value in percent ranges from ``000`` (=white) to ``100`` (=black).
+
+
+## Option: ``--append_px_wid_and_hgt`` or ``-p``
+
+Running ``lspng -nlp`` - the ``n`` will instruct lspng to omit the original 
+filename and name png files numerical. The ``l`` instructs lspng to append
+the image's lightness value and the ``p`` will instruct lspng to append the 
+image's width/height dimension, resulting in a filename like: `0_050_320x240.png`.  
 The luminance value in percent ranges from ``000`` (=white) to ``100`` (=black).
 
 
